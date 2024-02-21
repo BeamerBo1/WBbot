@@ -840,6 +840,8 @@ async def increase_quan_callback(query: types.CallbackQuery):
 
         # Обновляем текст сообщения с корзиной, чтобы отобразить новое количество товара
         await update_cart_message(message, client_id, product_id, total_cost)
+
+
     else:
         # Отправляем уведомление клиенту о том, что выбрано максимальное количество товара
         await bot.answer_callback_query(query.id, text=f"Вы уже выбрали максимальное количество этого товара.")
@@ -914,8 +916,11 @@ async def update_cart_message(message, client_id, product_id, total_cost):
 
     total_cost_message_id = user_cart_message_ids.get(client_id)
     if total_cost_message_id:
+        # Создаем разметку для кнопки "Оформить заказ"
+        markup = types.InlineKeyboardMarkup()
+        markup.row(types.InlineKeyboardButton("Оформить заказ", callback_data="order"))
         await dp.bot.edit_message_text(chat_id=message.chat.id, message_id=total_cost_message_id,
-                                       text=f"Общая стоимость: {total_cost} руб.")
+                                       text=f"Общая стоимость: {total_cost} руб.", reply_markup=markup)
 
     if cart_item:
         quantity = cart_item[3]
@@ -944,6 +949,8 @@ async def update_cart_message(message, client_id, product_id, total_cost):
         # Создаем текст сообщения для товара в корзине
         cart_message = f"{name} (Количество: {quantity}, Цена: {price} руб., Сумма: {item_cost} руб.)\n"
         cart_message += f"Описание: {product_data[2]}\n"
+
+
 
         # Редактируем сообщение с корзиной
         await message.edit_text(cart_message, reply_markup=markup)
