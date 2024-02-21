@@ -474,7 +474,7 @@ async def process_product_photo(message: types.Message, state: FSMContext):
     photo_file_name = f"{uuid.uuid4()}.jpg"
 
     # Сохраняем фото на сервере
-    photo_path = os.path.join("images", photo_file_name)
+    photo_path = os.path.join("images/", photo_file_name)
     await message.photo[-1].download(photo_path)
 
     # Получаем все данные о товаре из состояния FSM
